@@ -4,7 +4,7 @@ from py_finance import InvestorsUtilities
 def showIndex(ticker):
     print(ticker)
     stockClient = YahooFinanceClient(ticker)
-    stockHistory = stockClient.getHistory('2017-01-30', '2017-07-28')
+    stockHistory = stockClient.getHistory('2017-04-01', '2017-08-07')
     stockHistory.calcInvestorsData()
     stockHistory.calcDayReturn(10)
     stockHistory.calcDayReturn(20)
@@ -20,3 +20,4 @@ def showIndex(ticker):
 #print('*******************')
 #showIndex('^IXIC')
 showIndex('cern')
+showIndex('grmn')

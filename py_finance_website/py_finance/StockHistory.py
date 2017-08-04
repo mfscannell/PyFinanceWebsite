@@ -23,16 +23,15 @@ class StockHistory:
                     elif keys[j] == 'Volume':
                         self.tradingDays[iTradingDays]['Volume'] = float(item)
                     else:
-                        self.tradingDays[iTradingDays][keys[j]] = {'Price': float(item)}
+                        self.tradingDays[iTradingDays][keys[j]] = float(item)
 
                iTradingDays = iTradingDays + 1
     def calcDayReturn(self, numDays):
         for i, tradingDay in enumerate(self.tradingDays):
             endIndex = min(i + numDays, len(self.tradingDays) - 1)
             endDay = self.tradingDays[endIndex]
-            self.tradingDays[i][str(numDays) + ' Day Return'] = (endDay['Close']['Price'] - tradingDay['Close']['Price']) / tradingDay['Close']['Price']
+            self.tradingDays[i][str(numDays) + ' Day Return'] = (endDay['Close'] - tradingDay['Close']) / tradingDay['Close']
     def calcInvestorsData(self):
-        print('calcInvestorsData')
         for i, tradingDay in enumerate(self.tradingDays):
             self.__determineDistributionDay(i)
             self.__determineFollowThroughDay(i)
@@ -52,8 +51,8 @@ class StockHistory:
             if 'Volume' in item:
                 printString += str(item['Volume']) + ','
 
-            if 'Adj Close' in item and 'Price' in item['Adj Close']:
-                printString += str(item['Adj Close']['Price']) + ','
+            if 'Adj Close' in item:
+                printString += str(item['Adj Close']) + ','
 
             if 'IsDistributionDay' in item:
                 printString += str(item['IsDistributionDay']) + ','
@@ -97,10 +96,10 @@ class StockHistory:
             for tradingDay in self.tradingDays:
                 writer.writerow([
                     tradingDay['Date'],
-                    tradingDay['Open']['Price'],
-                    tradingDay['High']['Price'],
-                    tradingDay['Low']['Price'],
-                    tradingDay['Close']['Price'],
+                    tradingDay['Open'],
+                    tradingDay['High'],
+                    tradingDay['Low'],
+                    tradingDay['Close'],
                     tradingDay['Volume'],
                     tradingDay['IsDistributionDay'],
                     tradingDay['IsFollowThroughDay'],
@@ -127,7 +126,7 @@ class StockHistory:
         elif 'SupportPrice' not in self.tradingDays[index]:
             i = index - 1
 
-            while i > 0 and self.tradingDays[index]['Close']['Price'] < self.tradingDays[i]['SupportPrice']:
+            while i > 0 and self.tradingDays[index]['Close'] < self.tradingDays[i]['SupportPrice']:
                 i  = i - 1
 
             self.tradingDays[index]['SupportPrice'] = self.tradingDays[i]['SupportPrice']
@@ -137,25 +136,25 @@ class StockHistory:
         self.tradingDays[index]['NumDistributionDays'] = 0
 
         while j > 0 and j >= index - 24 and not self.tradingDays[j]['IsFollowThroughDay']:
-            if self.tradingDays[j]['IsDistributionDay'] and self.tradingDays[index]['High']['Price'] < 1.06 * self.tradingDays[j]['Close']['Price']:
+            if self.tradingDays[j]['IsDistributionDay'] and self.tradingDays[index]['High'] < 1.06 * self.tradingDays[j]['Close']:
                 self.tradingDays[index]['NumDistributionDays'] = self.tradingDays[index]['NumDistributionDays'] + 1
 
             j = j - 1
     def __determineResistancePrice(self, index):
         if index == 0:
-            self.tradingDays[index]['ResistancePrice'] = self.tradingDays[index]['High']['Price']
+            self.tradingDays[index]['ResistancePrice'] = self.tradingDays[index]['High']
         else:
-            self.tradingDays[index]['ResistancePrice'] = max(self.tradingDays[index - 1]['ResistancePrice'], self.tradingDays[index]['High']['Price'])
+            self.tradingDays[index]['ResistancePrice'] = max(self.tradingDays[index - 1]['ResistancePrice'], self.tradingDays[index]['High'])
     def __isDay4(self, index):
         establishedLowPrice = 0
         todaysDate = self.tradingDays[index]['Date']
 
         if self.__isHigherVolumeGain(index):
             if self.__isDay1(index - 3):
-                establishedLowPrice = min(self.tradingDays[index - 3]['Low']['Price'], self.tradingDays[index - 4]['Low']['Price'])
+                establishedLowPrice = min(self.tradingDays[index - 3]['Low'], self.tradingDays[index - 4]['Low'])
 
-                if self.tradingDays[index - 1]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 2]['Low']['Price'] > establishedLowPrice:
+                if self.tradingDays[index - 1]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 2]['Low'] > establishedLowPrice:
                     self.tradingDays[index]['SupportPrice']  = establishedLowPrice
                     return True
             else:
@@ -167,11 +166,11 @@ class StockHistory:
 
         if self.__isHigherVolumeGain(index):
             if self.__isDay1(index - 4):
-                establishedLowPrice = min(self.tradingDays[index - 4]['Low']['Price'], self.tradingDays[index - 5]['Low']['Price'])
+                establishedLowPrice = min(self.tradingDays[index - 4]['Low'], self.tradingDays[index - 5]['Low'])
 
-                if self.tradingDays[index - 1]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 2]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 3]['Low']['Price'] > establishedLowPrice:
+                if self.tradingDays[index - 1]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 2]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 3]['Low'] > establishedLowPrice:
                     self.tradingDays[index]['SupportPrice']  = establishedLowPrice
                     return True
             else:
@@ -183,12 +182,12 @@ class StockHistory:
 
         if self.__isHigherVolumeGain(index):
             if self.__isDay1(index - 5):
-                establishedLowPrice = min(self.tradingDays[index - 5]['Low']['Price'], self.tradingDays[index - 6]['Low']['Price'])
+                establishedLowPrice = min(self.tradingDays[index - 5]['Low'], self.tradingDays[index - 6]['Low'])
 
-                if self.tradingDays[index - 1]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 2]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 3]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 4]['Low']['Price'] > establishedLowPrice:
+                if self.tradingDays[index - 1]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 2]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 3]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 4]['Low'] > establishedLowPrice:
                     self.tradingDays[index]['SupportPrice']  = establishedLowPrice
                     return True
             else:
@@ -200,13 +199,13 @@ class StockHistory:
 
         if self.__isHigherVolumeGain(index):
             if self.__isDay1(index - 6):
-                establishedLowPrice = min(self.tradingDays[index - 6]['Low']['Price'], self.tradingDays[index - 7]['Low']['Price'])
+                establishedLowPrice = min(self.tradingDays[index - 6]['Low'], self.tradingDays[index - 7]['Low'])
 
-                if self.tradingDays[index - 1]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 2]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 3]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 4]['Low']['Price'] > establishedLowPrice and \
-                   self.tradingDays[index - 5]['Low']['Price'] > establishedLowPrice:
+                if self.tradingDays[index - 1]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 2]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 3]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 4]['Low'] > establishedLowPrice and \
+                   self.tradingDays[index - 5]['Low'] > establishedLowPrice:
                     self.tradingDays[index]['SupportPrice']  = establishedLowPrice
                     return True
             else:
@@ -214,10 +213,10 @@ class StockHistory:
 
         return False
     def __isDay1(self, index):
-        day1Range = self.tradingDays[index]['High']['Price'] - self.tradingDays[index]['Low']['Price']
+        day1Range = self.tradingDays[index]['High'] - self.tradingDays[index]['Low']
 
-        return self.tradingDays[index]['Close']['Price'] > 0.9 * day1Range + self.tradingDays[index]['Low']['Price'] or \
-               self.tradingDays[index]['Close']['Price'] > self.tradingDays[index - 1]['Low']['Price']
+        return self.tradingDays[index]['Close'] > 0.9 * day1Range + self.tradingDays[index]['Low'] or \
+               self.tradingDays[index]['Close'] > self.tradingDays[index - 1]['Low']
     def __isHigherVolumeGain(self, index):
         return self.tradingDays[index]['Volume'] > self.tradingDays[index - 1]['Volume'] and \
-               self.tradingDays[index]['Close']['Price'] > 1.01 * self.tradingDays[index - 1]['Close']['Price']
+               self.tradingDays[index]['Close'] > 1.01 * self.tradingDays[index - 1]['Close']

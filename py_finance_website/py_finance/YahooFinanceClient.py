@@ -13,14 +13,12 @@ class YahooFinanceClient:
     def printStock(self):
         print(self.tickerSymbol)
     def getHistory(self, fromDate, toDate):
-        print("getHistory")
         time_stamp_from = calendar.timegm(datetime.datetime.strptime(fromDate, "%Y-%m-%d").timetuple())
         time_stamp_to = calendar.timegm(datetime.datetime.strptime(toDate, "%Y-%m-%d").timetuple())
         quote_link = 'https://query1.finance.yahoo.com/v7/finance/download/{}?period1={}&period2={}&interval=1d&events=history&crumb={}'
 
         attempts = 0
         while attempts < 5:
-            print('attempt:' + str(attempts))
             crumble_str, cookie_str = self.__get_crumble_and_cookie(self.tickerSymbol)
             link = quote_link.format(self.tickerSymbol, time_stamp_from, time_stamp_to, crumble_str)
             request = urllib.request.Request(link, headers={'Cookie': cookie_str})
