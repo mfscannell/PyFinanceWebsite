@@ -38,6 +38,8 @@ class StockHistory:
             self.__determineNumDistributionDays(i)
             self.__determineResistancePrice(i)
         pass
+    def getLastTradingDay(self):
+        return self.tradingDays[len(self.tradingDays) - 1]
     def printToScreen(self):
         for i, item in enumerate(self.tradingDays):
             if i == len(self.tradingDays) - 25:

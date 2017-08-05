@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <title>FIrst App</title>
     <link rel="stylesheet" href="{% static "py_finance_website/bootstrap/css/bootstrap.min.css" %}" />
+    {% load customFilters %}
 </head>
 <body>
     <h1>Hello this is index.html</h1>
@@ -16,9 +17,12 @@
         </form>
         <div class="row">
             {% if stockHistory %}
-            <div class="col-md-12">
-                Stock History!
-            </div>
+                <div class="col-md-6">
+                    Stock History!
+                </div>
+                <div class="col-md-6">
+                    {{ stockHistory|getLastTradingDayHigh }}
+                </div>
             {% endif %}
         </div>
     </div>
