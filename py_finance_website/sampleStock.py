@@ -6,9 +6,9 @@ def showIndex(ticker):
     stockClient = YahooFinanceClient(ticker)
     stockHistory = stockClient.getHistory('2017-04-01', '2017-08-07')
     stockHistory.calcInvestorsData()
-    stockHistory.calcDayReturn(10)
-    stockHistory.calcDayReturn(20)
-    stockHistory.calcDayReturn(30)
+    # stockHistory.calcDayReturn(10)
+    # stockHistory.calcDayReturn(20)
+    # stockHistory.calcDayReturn(30)
     stockHistory.printToScreen()
     #stockHistory.writeToCsvFile('sAndP.csv')
 

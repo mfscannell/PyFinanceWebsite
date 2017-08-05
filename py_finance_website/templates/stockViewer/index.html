@@ -16,12 +16,13 @@
             <input type="submit" class="btn btn-primary" name="stockSymbolSubmit" value="Submit">
         </form>
         <div class="row">
-            {% if stockHistory %}
+            {% if tradingDays %}
                 <div class="col-md-6">
                     Stock History!
                 </div>
                 <div class="col-md-6">
-                    {{ stockHistory|getLastTradingDayHigh }}
+                    {{}}
+                    {{ tradingDays|index:"4"|keyValue:"High" }}
                 </div>
             {% endif %}
         </div>
