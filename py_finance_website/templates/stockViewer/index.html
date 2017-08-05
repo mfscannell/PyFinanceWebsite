@@ -8,6 +8,13 @@
 </head>
 <body>
     <h1>Hello this is index.html</h1>
+    <div class="container">
+        <form class="form-inline" method="post">
+            {{ stockSymbolEntryForm }}
+            {% csrf_token %}
+            <input type="submit" class="btn btn-primary" name="stockSymbolSubmit" value="Submit">
+        </form>
+    </div>
 
     <script src="{% static "py_finance_website/jquery/jquery-3.2.1.min.js" %}"></script>
     <script src="{% static "py_finance_website/bootstrap/js/bootstrap.min.js" %}"></script>
