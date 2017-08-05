@@ -17,9 +17,8 @@ def index(request):
             print(str(stockSymbolEntryForm.cleaned_data['secondDay']))
 
             financeClient = YahooFinanceClient(stockSymbolEntryForm.cleaned_data['stockSymbol'])
-            stockHistory = financeClient.getHistory('2017-04-01', '2017-08-07')
-            # stockHistory = financeClient.getHistory(str(stockSymbolEntryForm.cleaned_data['firstDay']),
-            #                                         str(stockSymbolEntryForm.cleaned_data['secondDay']))
+            stockHistory = financeClient.getHistory(str(stockSymbolEntryForm.cleaned_data['firstDay']),
+                                                    str(stockSymbolEntryForm.cleaned_data['secondDay']))
             stockSymbolFormContext['stockHistory'] = stockHistory
 
     stockSymbolFormContext['stockSymbolEntryForm'] = stockSymbolEntryForm
