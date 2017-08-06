@@ -3,7 +3,11 @@ $( document ).ready(function() {
         var upperTechnicalIndicators = [
             {
                 'indicatorType': 'EMA',
-                'interval': 13
+                'interval': 10
+            },
+            {
+                'indicatorType': 'EMA',
+                'interval': 50
             }
         ];
         var lowerTechnicalIndicators = [
@@ -21,11 +25,20 @@ $( document ).ready(function() {
         var volume = tradingData.volume;
 
         Highcharts.stockChart('stockContainer', {
-            rangeSelector: {
-                selected: 1
+            plotOptions: {
+                candlestick: {
+                    color: 'red',
+                    upColor: 'green'
+                }
             },
-            title: {
-                text: stockSymbol
+            rangeSelector: {
+                enabled: false
+            },
+            navigator: {
+                enabled: false
+            },
+            scrollbar: {
+                enabled: false
             },
             yAxis: [{
                 labels: {

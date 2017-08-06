@@ -31,13 +31,10 @@ var StockUtilities = {
                         volume,
                         upperTechlicalIndicators,
                         lowerTechnicalIndicators) {
-        groupingUnits = [[
-                'week',
-                [1]
-            ], [
-                'month',
-                [1, 2, 3, 4, 6]
-            ]];
+        var groupingUnits = [[
+            'day',
+            [1]
+        ]];
 
         var series = [{
             name: stockSymbol,
