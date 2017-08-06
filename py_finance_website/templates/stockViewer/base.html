@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="{% static "py_finance_website/bootstrap/css/bootstrap.min.css" %}" />
+        {% load customFilters %}
+    </head>
+    <body>
+        <div>
+        {% block body_block %}
+        {% endblock %}
+        </div>
+        <script src="{% static "py_finance_website/jquery/jquery-3.2.1.min.js" %}"></script>
+        <script src="{% static "py_finance_website/bootstrap/js/bootstrap.min.js" %}"></script>
+    </body>
+</html>

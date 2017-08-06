@@ -1,13 +1,8 @@
-<!DOCTYPE html>
+{% extends "stockViewer/base.html" %}
+{% block body_block %}
 {% load staticfiles %}
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>FIrst App</title>
-    <link rel="stylesheet" href="{% static "py_finance_website/bootstrap/css/bootstrap.min.css" %}" />
-    {% load customFilters %}
-</head>
-<body>
+{% load customFilters %}
+<div class="container">
     <h1>Hello this is index.html</h1>
     <div class="container">
         <form class="form-inline" method="post">
@@ -23,13 +18,9 @@
                 <div class="col-md-6">
                     {{ tradingDays|index:"4"|keyValue:"High" }}
                 </div>
-                <!-- <script>
-                    var my_chart = '{{ tradingDays }}';
-                </script> -->
             {% endif %}
         </div>
     </div>
-
     <script src="{% static "py_finance_website/jquery/jquery-3.2.1.min.js" %}"></script>
     <script src="{% static "py_finance_website/bootstrap/js/bootstrap.min.js" %}"></script>
     {% if tradingDays %}
@@ -39,5 +30,5 @@
         var my_var_parsed = jQuery.parseJSON(my_var_esc);
     </script>
     {% endif %}
-</body>
-</html>
+</div>
+{% endblock %}
