@@ -3,29 +3,27 @@ import csv
 
 class StockHistory:
     def __init__(self, stockHistoryString):
-        self.tradingDays = stockHistoryString.split('\n')
+        tempTradingDays = stockHistoryString.split('\n')
+        self.tradingDays = []
 
-        keys = self.tradingDays[0].split(',')
-        self.tradingDays = self.tradingDays[1:]
+        keys = tempTradingDays[0].split(',')
 
-        iTradingDays = 0
+        iTradingDays = 1
 
-        while iTradingDays < len(self.tradingDays):
-           if self.tradingDays[iTradingDays] == '' or 'null' in self.tradingDays[iTradingDays]:
-               del self.tradingDays[iTradingDays]
-           else:
-               tempTradingDay = self.tradingDays[iTradingDays].split(',')
-               self.tradingDays[iTradingDays] = {}
+        while iTradingDays < len(tempTradingDays):
+            if tempTradingDays[iTradingDays] != '' and 'null' not in tempTradingDays[iTradingDays]:
+                tempTradingDay = tempTradingDays[iTradingDays].split(',')
+                tradingDay = {}
 
-               for j, item in enumerate(tempTradingDay):
+                for j, item in enumerate(tempTradingDay):
                     if keys[j] == 'Date':
-                        self.tradingDays[iTradingDays]['Date'] = item
-                    elif keys[j] == 'Volume':
-                        self.tradingDays[iTradingDays]['Volume'] = float(item)
+                        tradingDay['Date'] = item
                     else:
-                        self.tradingDays[iTradingDays][keys[j]] = float(item)
+                        tradingDay[keys[j]] = float(item)
 
-               iTradingDays = iTradingDays + 1
+                self.tradingDays.append(tradingDay)
+
+            iTradingDays = iTradingDays + 1
     def calcDayReturn(self, numDays):
         for i, tradingDay in enumerate(self.tradingDays):
             endIndex = min(i + numDays, len(self.tradingDays) - 1)

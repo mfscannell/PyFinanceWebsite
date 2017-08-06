@@ -20,4 +20,4 @@ def showIndex(ticker):
 #print('*******************')
 #showIndex('^IXIC')
 showIndex('cern')
-showIndex('grmn')
+#showIndex('grmn')

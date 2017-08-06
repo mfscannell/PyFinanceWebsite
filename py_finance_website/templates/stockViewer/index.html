@@ -20,15 +20,20 @@
                 </div>
             {% endif %}
         </div>
+        <div class="row">
+            <div id="stockContainer" style="height: 400px; min-width: 310px"></div>
+        </div>
     </div>
     <script src="{% static "py_finance_website/jquery/jquery-3.2.1.min.js" %}"></script>
     <script src="{% static "py_finance_website/bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "py_finance_website/highstock/code/highstock.js" %}" charset="utf-8"></script>
     {% if tradingDays %}
     <script>
         var my_dummy = {{ dummy }};
         var my_var_esc = '{{ dumJson|escapejs }}';
-        var my_var_parsed = jQuery.parseJSON(my_var_esc);
+        var tradingDaysData = jQuery.parseJSON(my_var_esc);
     </script>
+    <script src="{% static "py_finance_website/javascript/index.js" %}" charset="utf-8"></script>
     {% endif %}
 </div>
 {% endblock %}
