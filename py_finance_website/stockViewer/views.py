@@ -19,7 +19,7 @@ def index(request):
                                                     str(stockSymbolEntryForm.cleaned_data['secondDay']))
             print("getHistory done")
             stockViewContext['tradingDays'] = stockHistory.tradingDays
-            stockViewContext['dumJson'] = json.dumps([{'a':24}, {'a':32}])
+            stockViewContext['dumJson'] = json.dumps(stockHistory.tradingDays)
 
     stockViewContext['stockSymbolEntryForm'] = stockSymbolEntryForm
     stockViewContext['dummy'] = 23
