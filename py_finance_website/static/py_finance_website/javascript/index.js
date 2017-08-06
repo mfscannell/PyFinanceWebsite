@@ -7,7 +7,13 @@ $( document ).ready(function() {
             }
         ];
         var lowerTechnicalIndicators = [
-            {'indicatorType': 'MACD'}
+            {
+                'indicatorType': 'Volume'
+            },
+            {
+                'indicatorType': 'RSI',
+                'interval': 2
+            }
         ];
         var stockSymbol = $('#id_stockSymbol').val().toUpperCase();
         var tradingData = StockUtilities.calcOhlcVolume(tradingDaysData);
@@ -29,7 +35,7 @@ $( document ).ready(function() {
                 title: {
                     text: 'OHLC'
                 },
-                height: '60%',
+                height: '45%',
                 lineWidth: 2
             }, {
                 labels: {
@@ -39,15 +45,31 @@ $( document ).ready(function() {
                 title: {
                     text: 'Volume'
                 },
-                top: '65%',
-                height: '35%',
+                top: '50%',
+                height: '25%',
+                offset: 0,
+                lineWidth: 2
+            }, {
+                labels: {
+                    align: 'right',
+                    x: -3
+                },
+                title: {
+                    text: 'RSI'
+                },
+                top: '75%',
+                height: '25%',
                 offset: 0,
                 lineWidth: 2
             }],
             tooltip: {
                 split: true
             },
-            series: StockUtilities.getSeries(stockSymbol, ohlc, volume, upperTechnicalIndicators)
+            series: StockUtilities.getSeries(stockSymbol,
+                                             ohlc,
+                                             volume,
+                                             upperTechnicalIndicators,
+                                             lowerTechnicalIndicators)
         });
     }
 });

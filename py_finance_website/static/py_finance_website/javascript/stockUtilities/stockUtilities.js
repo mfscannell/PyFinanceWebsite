@@ -1,4 +1,7 @@
 var StockUtilities = {
+    /**
+     * Calculates the Open-High-Low-Close and Volume data arrays.
+     **/
     calcOhlcVolume: function(tradingDaysData) {
         var ohlc = [];
         var volume = [];
@@ -23,7 +26,11 @@ var StockUtilities = {
             'volume': volume
         };
     },
-    getSeries: function(stockSymbol, ohlc, volume, upperTechlicalIndicators) {
+    getSeries: function(stockSymbol,
+                        ohlc,
+                        volume,
+                        upperTechlicalIndicators,
+                        lowerTechnicalIndicators) {
         groupingUnits = [[
                 'week',
                 [1]
@@ -51,6 +58,13 @@ var StockUtilities = {
             }
         }];
 
+        for (var i = 0; i < lowerTechnicalIndicators.length; i++) {
+            if (lowerTechnicalIndicators[i].indicatorType === 'RSI') {
+                series.push(StockUtilities.getRsiSeries(ohlc,
+                                                        lowerTechnicalIndicators[i].interval));
+            }
+        }
+
         for (var i = 0; i < upperTechlicalIndicators.length; i++) {
             if (upperTechlicalIndicators[i].indicatorType === 'SMA') {
                 series.push(StockUtilities.getSmaSeries(ohlc, upperTechlicalIndicators[i].interval));
@@ -61,6 +75,9 @@ var StockUtilities = {
 
         return series;
     },
+    /**
+     * Returns the series for the Exponential Moving Average.
+     **/
     getEmaSeries: function(ohlc, dayMovingAvg) {
         var multiplier = (2 / (dayMovingAvg + 1));
         var emaData = [];
@@ -89,6 +106,68 @@ var StockUtilities = {
             data: emaData
         };
     },
+    getRsiSeries: function(ohlc, interval) {
+        var rsiData = [];
+        var avgGain = 0;
+        var avgLoss = 0;
+
+        for (var i = interval; i < ohlc.length; i++) {
+            if (i === interval) {
+                // initial day
+                var totalGains = 0;
+                var totalLosses = 0;
+
+                for (var j = 1; j <= interval; j++) {
+                    if (ohlc[j][4] > ohlc[j - 1][4]) {
+                        totalGains = totalGains + ohlc[j][4] - ohlc[j - 1][4];
+                    } else {
+                        totalLosses = totalGains + ohlc[j - 1][4] - ohlc[j][4];
+                    }
+                }
+
+                avgGain = totalGains / interval;
+                avgLoss = totalLosses / interval;
+            } else {
+                // subsequent day
+                if (ohlc[i][4] > ohlc[i - 1][4]) {
+                    avgGain = (avgGain * (interval - 1) + ohlc[i][4] - ohlc[i - 1][4]) / interval;
+                    avgLoss = (avgLoss * (interval - 1) + 0) / interval;
+                } else {
+                    avgGain = (avgGain * (interval - 1) + 0) / interval;
+                    avgLoss = (avgLoss * (interval - 1) + ohlc[i - 1][4] - ohlc[i][4]) / interval;
+                }
+            }
+
+            if (avgLoss === 0) {
+                rsiData.push([
+                    ohlc[i][0],
+                    100
+                ]);
+            } else if (avgGain === 0) {
+                rsiData.push([
+                    ohlc[i][0],
+                    0
+                ]);
+            } else {
+                var relativeStrength = avgGain / avgLoss;
+
+                rsiData.push([
+                    ohlc[i][0],
+                    100 - 100 / (1 + relativeStrength)
+                ])
+            }
+        }
+
+        return {
+            name: '' + interval + '-Day RSI',
+            type: 'line',
+            data: rsiData,
+            yAxis: 2
+        }
+    },
+    /**
+     * Returns the series for the Exponential Moving Average.
+     **/
     getSmaSeries: function(ohlc, dayMovingAvg) {
         var smaData = [];
 
