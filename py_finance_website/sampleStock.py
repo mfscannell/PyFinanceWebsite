@@ -1,23 +1,24 @@
 from py_finance import YahooFinanceClient
 from py_finance import InvestorsUtilities
 
-def showIndex(ticker):
+def showIndex(ticker, startDate, endDate):
     print(ticker)
     stockClient = YahooFinanceClient(ticker)
-    stockHistory = stockClient.getHistory('2017-04-01', '2017-08-07')
+    stockHistory = stockClient.getHistory(startDate, endDate)
     stockHistory.calcInvestorsData()
-    # stockHistory.calcDayReturn(10)
-    # stockHistory.calcDayReturn(20)
-    # stockHistory.calcDayReturn(30)
     stockHistory.printToScreen()
-    #stockHistory.writeToCsvFile('sAndP.csv')
 
-#showIndex('^DJT')
-#print('*******************')
-#showIndex('^DJI')
-#print('*******************')
-#showIndex('^GSPC')
-#print('*******************')
-#showIndex('^IXIC')
-showIndex('cern')
-#showIndex('grmn')
+stockSymbol = input("Enter stock symbol:")
+startDate = input("Start date (yyyy-mm-dd):")
+endDate = input("End date (yyyy-mm-dd):")
+
+if stockSymbol == "all":
+    showIndex('^DJT', startDate, endDate)
+    print('*******************')
+    showIndex('^DJI', startDate, endDate)
+    print('*******************')
+    showIndex('^GSPC', startDate, endDate)
+    print('*******************')
+    showIndex('^IXIC', startDate, endDate)
+else:
+    showIndex(stockSymbol, startDate, endDate)
