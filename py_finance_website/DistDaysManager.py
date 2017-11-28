@@ -27,12 +27,15 @@ class TestCallback:
                   fg='yellow').pack(side="bottom",
                                     fill="x",
                                     expand=1)
+        self.returnDateTextBox = tk.Text(self.top, height=2, width = 30)
+        self.returnDateTextBox.pack(side="bottom", fill="x", expand=1)
+        tk.Label(self.top, text = 'Return Date (YYYY-MM-DD)').pack(side="bottom", fill="x", expand=1)
         self.endDateTextBox = tk.Text(self.top, height=2, width = 30)
         self.endDateTextBox.pack(side="bottom", fill="x", expand=1)
-        tk.Label(self.top, textvariable = 'End Date (YYYY-MM-DD)').pack(side="bottom", fill="x", expand=1)
+        tk.Label(self.top, text = 'End Date (YYYY-MM-DD)').pack(side="bottom", fill="x", expand=1)
         self.startDateTextBox = tk.Text(self.top, height=2, width = 30)
         self.startDateTextBox.pack(side="bottom", fill="x", expand=1)
-        tk.Label(self.top, textvariable = 'Start Date (YYYY-MM-DD)').pack(side="bottom", fill="x", expand=1)
+        tk.Label(self.top, text = 'Start Date (YYYY-MM-DD)').pack(side="bottom", fill="x", expand=1)
         self.excelTabsDropdown = tk.OptionMenu(self.top,
                                                self.selectedExcelTab,
                                                *self.excelTabs)
@@ -58,23 +61,36 @@ class TestCallback:
 
         currentStockSymbol = currentSheet['B' + str(currentRow)].value
 
+        startDate = self.startDateTextBox.get("1.0", 'end-1c')
+        endDate = self.endDateTextBox.get("1.0", 'end-1c')
+        returnDate = self.returnDateTextBox.get("1.0", 'end-1c')
+
         while currentStockSymbol != None:
             print(currentStockSymbol)
             if ('.' not in currentStockSymbol):
                 stockClient = YahooFinanceClient(currentStockSymbol)
-                stockHistory = stockClient.getHistory(self.startDateTextBox.get("1.0", 'end-1c'),
-                                                      self.endDateTextBox.get("1.0", 'end-1c'))
-                stockHistory.calcInvestorsData()
-                print(stockHistory.getLastTradingDay()['NumDistributionDays'])
+                stockHistory = stockClient.getHistory(startDate, returnDate)
+                try:
+                    stockHistory.calcInvestorsData()
+                    numDays = stockHistory.getNumDistDays(endDate)
+                    startPrice = stockHistory.getAdjClosePrice(endDate)
+                    returnPrice = stockHistory.getLastAdjClosePrice()
+                except:
+                    print(currentStockSymbol + 'No stockHistory')
+                currentSheet['P' + str(currentRow)] = numDays
+                currentSheet['V' + str(currentRow)] = startPrice
+                currentSheet['W' + str(currentRow)] = returnPrice
 
             currentRow = currentRow + 1
             currentStockSymbol = currentSheet['B' + str(currentRow)].value
+        self.excelWorkbook.save(self.excelFilePathString)
         print('done')
+        print(self.excelFilePathString)
 
     def selectExcelFile(self):
-        tempExcelFilePath = tkfd.askopenfilename(title="Select Excel File")
-        self.excelFilePath.set(tempExcelFilePath)
-        self.excelWorkbook = openpyxl.load_workbook(tempExcelFilePath)
+        self.excelFilePathString = tkfd.askopenfilename(title="Select Excel File")
+        self.excelFilePath.set(self.excelFilePathString)
+        self.excelWorkbook = openpyxl.load_workbook(self.excelFilePathString)
 
         self.selectedExcelTab.set('')
         self.excelTabsDropdown['menu'].delete(0, 'end')

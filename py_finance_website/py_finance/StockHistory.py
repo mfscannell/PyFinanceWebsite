@@ -38,6 +38,18 @@ class StockHistory:
         pass
     def getLastTradingDay(self):
         return self.tradingDays[len(self.tradingDays) - 1]
+    def getNumDistDays(self, date):
+        for tradingDay in self.tradingDays:
+            if date == tradingDay['Date']:
+                return tradingDay['NumDistributionDays']
+        return 0
+    def getAdjClosePrice(self, date):
+        for tradingDay in self.tradingDays:
+            if date == tradingDay['Date']:
+                return tradingDay['Adj Close']
+        return 0
+    def getLastAdjClosePrice(self):
+        return self.tradingDays[-1]['Adj Close']
     def printToScreen(self):
         for i, item in enumerate(self.tradingDays):
             if i == len(self.tradingDays) - 25:
